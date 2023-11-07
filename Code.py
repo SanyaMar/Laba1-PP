@@ -13,7 +13,8 @@ def creating_folder(name):
     if not os.path.isdir(name):
          os.mkdir(name)
 
-def getting_links(request)
+
+def getting_links(request):
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
     url = f"https://yandex.ru/images/search?text={request}"
     driver.get(url=url)
@@ -21,9 +22,9 @@ def getting_links(request)
     time.sleep(10)
     driver.find_element(By.CSS_SELECTOR, 'div.serp-item__preview a.serp-item__link').click()
     with open(f"urls_{request}.txt", 'w') as file:
-        for i in range(10):
+        for i in range(15):
             try:
-                time.sleep(0.5)
+                time.sleep(5)
                 link = driver.find_element(By.CSS_SELECTOR, "a.Button2_view_action").get_attribute("href")
                 file.write(link + '\n')
                 driver.find_element(By.CSS_SELECTOR, "div.CircleButton:nth-child(4)").click()
@@ -31,8 +32,6 @@ def getting_links(request)
                 continue
     driver.close()
     driver.quit()
-
-
 
 
 def download_images(images):
@@ -45,7 +44,7 @@ def download_images(images):
         for line in file:
             try:
                 url = line.strip()
-                time.sleep(4)
+                time.sleep(10)
                 response = requests.get(url, stream=True)
                 if response.status_code == 200:
                     count+=1
@@ -67,6 +66,7 @@ def main():
     request = "dog"
     getting_links(request)
     download_images(request)
+
 
 if __name__ == "__main__":
     main()      
