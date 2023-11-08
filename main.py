@@ -1,4 +1,4 @@
-from code import main
+from Code import main
 
 if __name__ == "__main__":
     main()
