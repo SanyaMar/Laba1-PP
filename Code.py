@@ -16,7 +16,6 @@ def creating_folder(name: str) -> None:
 
 def getting_links(request: str) -> None:
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-    driver.maximize_window()
     time.sleep(2)
     url = f"https://yandex.ru/images/search?text={request}"
     driver.get(url=url)
@@ -29,11 +28,11 @@ def getting_links(request: str) -> None:
             try:
                 time.sleep(5)
                 link = driver.find_element(
-                    By.CSS_SELECTOR, "a.Button2_view_action"
-                ).get_attribute("href")
+                    By.CLASS_NAME, "MMImage-Origin"
+                ).get_attribute("src")
                 file.write(link + "\n")
                 driver.find_element(
-                    By.CSS_SELECTOR, "div.CircleButton:nth-child(4)"
+                    By.CLASS_NAME, "MediaViewer_theme_fiji-ButtonNext"
                 ).click()
             except:
                 continue
@@ -54,11 +53,12 @@ def download_images(images: str) -> None:
                 time.sleep(10)
                 response = requests.get(url, stream=True)
                 if response.status_code == 200:
-                    count += 1
                     with open(
                         f"dataset/{images}/{str(count).zfill(4)}.jpg", "wb"
                     ) as image_file:
                         shutil.copyfileobj(response.raw, image_file)
+                        count += 1
+                        
                 else:
                     continue
             except:
@@ -69,16 +69,12 @@ def download_images(images: str) -> None:
 def main() -> None:
     if os.path.isdir("dataset"):
         shutil.rmtree("dataset")
-   # request = "cat"
-   # getting_links(request)
-   # time.sleep(5)
-   # download_images(request)
-   # time.sleep(10)
     request = "dog"
     getting_links(request)
     time.sleep(5)
     download_images(request)
-
-
-if __name__ == "__main__":
-    main()
+    request = "cat"
+    getting_links(request)
+    time.sleep(5)
+    download_images(request)
+    time.sleep(15)
